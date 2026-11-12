@@ -3,41 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/crm.css">
     <title>Log In | 10X CRM</title>
 </head>
-<body>
-    <main>
-        <p>10X CRM</p>
-        <h1>Welcome back</h1>
+<body class="crm-access">
+    <main class="access-shell">
+        <div class="access-brand">
+            <p class="access-product">10X CRM</p>
+            <p class="access-wordmark">CTRL<span>+ME</span></p>
+        </div>
 
-        <form method="post" novalidate>
-            <div>
-                <label for="email">Email</label>
-                <input
-                    type="text"
-                    id="email"
-                    name="email"
-                    inputmode="email"
-                    autocomplete="email"
-                    required
-                >
-            </div>
+        <section class="access-content" aria-labelledby="access-title">
+            <h1 id="access-title">Welcome back.</h1>
 
-            <div>
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    autocomplete="current-password"
-                    required
-                >
-            </div>
+            <form class="access-form" method="post" novalidate>
+                <div class="access-field">
+                    <label for="email">Email</label>
+                    <input
+                        type="text"
+                        id="email"
+                        name="email"
+                        inputmode="email"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
 
-            <button type="submit" disabled>Log In</button>
-        </form>
+                <div class="access-field">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
 
-        <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+                <button class="access-submit" type="submit" disabled>
+                    Log in <span aria-hidden="true">→</span>
+                </button>
+            </form>
+
+            <p class="access-switch">
+                Don’t have an account? <a href="signup.html">Sign up</a>
+            </p>
+        </section>
     </main>
 </body>
 </html>
