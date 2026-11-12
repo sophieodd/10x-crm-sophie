@@ -583,3 +583,42 @@ body.crm-access {
 .client-value {
     font-weight: 700;
 }
+
+.clients-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+#client-dialog {
+    width: min(32rem, calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+}
+
+#client-dialog::backdrop {
+    background: rgb(17 17 22 / 65%);
+}
+
+#client-dialog h2 {
+    margin: 0;
+}
+
+#client-form {
+    margin-top: 1rem;
+}
+
+#client-form select {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--field-border);
+    background: var(--page);
+    color: var(--text);
+    font: inherit;
+}

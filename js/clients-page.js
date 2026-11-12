@@ -1,15 +1,29 @@
 import { getSignedInUser, signOut } from './session.js';
 
 const CLIENTS_KEY = 'crm_clients';
+const USERS_ENDPOINT = 'https://dummyjson.com/users';
+const CLIENT_STATUSES = ['Lead', 'Contacted', 'Won', 'Lost'];
+
 const page = document.querySelector('#clients-page');
 const list = document.querySelector('#client-list');
 const statusMessage = document.querySelector('#clients-status');
 const retryButton = document.querySelector('#retry-clients');
+const addButton = document.querySelector('#open-client-dialog');
+const dialog = document.querySelector('#client-dialog');
+const closeButton = document.querySelector('#close-client-dialog');
+const form = document.querySelector('#client-form');
+const saveButton = form.querySelector('button[type="submit"]');
+const formError = document.querySelector('#client-form-error');
+const toast = document.querySelector('#client-toast');
+
+let clients = [];
+let toastTimer;
 
 const dollars = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
 });
 
 function textElement(tag, text, className = '') {
@@ -19,7 +33,7 @@ function textElement(tag, text, className = '') {
     return element;
 }
 
-function renderClients(clients) {
+function renderClients() {
     list.replaceChildren();
     statusMessage.textContent = clients.length ? '' : 'No clients found.';
 
@@ -28,14 +42,22 @@ function renderClients(clients) {
         card.className = 'card client-card';
         card.dataset.id = String(client.id);
 
-        const avatar = document.createElement('img');
-        avatar.src = client.image;
-        avatar.alt = '';
-        avatar.width = 44;
-        avatar.height = 44;
-        avatar.loading = 'lazy';
+        if (client.image) {
+            const avatar = document.createElement('img');
+            avatar.src = client.image;
+            avatar.alt = '';
+            avatar.width = 44;
+            avatar.height = 44;
+            avatar.loading = 'lazy';
+            card.append(avatar);
+        }
 
         const details = document.createElement('div');
+
+        if (!client.image) {
+            details.style.gridColumn = '1 / -1';
+        }
+
         details.append(
             textElement('h2', client.name),
             textElement('p', client.company || 'Independent', 'muted'),
@@ -44,12 +66,18 @@ function renderClients(clients) {
             textElement('p', dollars.format(client.dealValue), 'client-value')
         );
 
-        card.append(avatar, details);
+        card.append(details);
         list.append(card);
     }
 }
 
+function saveClients(nextClients) {
+    localStorage.setItem(CLIENTS_KEY, JSON.stringify(nextClients));
+    clients = nextClients;
+}
+
 async function loadClients() {
+    addButton.disabled = true;
     retryButton.hidden = true;
     statusMessage.textContent = 'Loading clients...';
 
@@ -57,40 +85,178 @@ async function loadClients() {
         const savedClients = localStorage.getItem(CLIENTS_KEY);
 
         if (savedClients !== null) {
-            const clients = JSON.parse(savedClients);
-            if (!Array.isArray(clients)) {
+            const storedClients = JSON.parse(savedClients);
+
+            if (!Array.isArray(storedClients)) {
                 throw new Error('Saved clients have an invalid format.');
             }
 
-            renderClients(clients);
-            return;
+            clients = storedClients;
+        } else {
+            const response = await fetch(`${USERS_ENDPOINT}?limit=30`);
+
+            if (!response.ok) {
+                throw new Error(`Client request failed: ${response.status}`);
+            }
+
+            const { users } = await response.json();
+
+            saveClients(users.map(user => ({
+                id: user.id,
+                apiId: user.id,
+                name: `${user.firstName} ${user.lastName}`,
+                email: user.email,
+                phone: user.phone ?? '',
+                company: user.company?.name ?? '',
+                image: user.image ?? '',
+                status: 'Lead',
+                dealValue: 1000,
+                notes: [],
+                createdAt: new Date().toISOString(),
+            })));
         }
 
-        const response = await fetch('https://dummyjson.com/users?limit=30');
-        if (!response.ok) {
-            throw new Error(`Client request failed: ${response.status}`);
-        }
-
-        const { users } = await response.json();
-        const clients = users.map(user => ({
-            id: user.id,
-            name: `${user.firstName} ${user.lastName}`,
-            email: user.email,
-            phone: user.phone ?? '',
-            company: user.company?.name ?? '',
-            image: user.image,
-            status: 'Lead',
-            dealValue: 1000,
-            notes: [],
-            createdAt: new Date().toISOString(),
-        }));
-
-        localStorage.setItem(CLIENTS_KEY, JSON.stringify(clients));
-        renderClients(clients);
+        renderClients();
+        addButton.disabled = false;
     } catch {
         statusMessage.textContent =
             'Could not load clients. Check your connection and try again.';
         retryButton.hidden = false;
+    }
+}
+
+function showClientErrors(errors) {
+    for (const message of form.querySelectorAll('[data-error]')) {
+        const fieldName = message.dataset.error;
+        const error = errors[fieldName] ?? '';
+
+        message.textContent = error;
+        form.elements.namedItem(fieldName)
+            .setAttribute('aria-invalid', String(Boolean(error)));
+    }
+
+    const firstField = Object.keys(errors)[0];
+
+    if (firstField) {
+        form.elements.namedItem(firstField)?.focus();
+    }
+}
+
+function openClientDialog() {
+    form.reset();
+    showClientErrors({});
+    formError.textContent = '';
+    dialog.showModal();
+}
+
+function showClientToast(message) {
+    window.clearTimeout(toastTimer);
+    toast.hidden = false;
+    toast.textContent = message;
+
+    toastTimer = window.setTimeout(() => {
+        toast.hidden = true;
+        toast.textContent = '';
+    }, 3000);
+}
+
+async function addClient(event) {
+    event.preventDefault();
+    if (saveButton.disabled) return;
+
+    formError.textContent = '';
+
+    const fields = new FormData(form);
+    const name = String(fields.get('name') ?? '').trim();
+    const email = String(fields.get('email') ?? '').trim().toLowerCase();
+    const phone = String(fields.get('phone') ?? '').trim();
+    const company = String(fields.get('company') ?? '').trim();
+    const dealValue = Number(fields.get('dealValue'));
+    const status = String(fields.get('status') ?? 'Lead');
+    const errors = {};
+
+    if (name.length < 3) {
+        errors.name = 'Name must be at least 3 characters';
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errors.email = 'Please enter a valid email address';
+    } else if (clients.some(client => client.email.toLowerCase() === email)) {
+        errors.email = 'A client with this email already exists';
+    }
+
+    if (phone && phone.length < 6) {
+        errors.phone = 'Phone number looks too short';
+    }
+
+    if (!Number.isFinite(dealValue) || dealValue <= 0) {
+        errors.dealValue = 'Deal value must be a positive number';
+    }
+
+    showClientErrors(errors);
+    if (Object.keys(errors).length) return;
+
+    if (!CLIENT_STATUSES.includes(status)) {
+        formError.textContent = 'Select a valid status.';
+        form.elements.namedItem('status').focus();
+        return;
+    }
+
+    saveButton.disabled = true;
+    closeButton.disabled = true;
+
+    try {
+        const [firstName, ...remainingNames] = name.split(/\s+/);
+        const response = await fetch(`${USERS_ENDPOINT}/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                firstName,
+                lastName: remainingNames.join(' '),
+                email,
+                phone,
+                company: { name: company },
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Client request failed: ${response.status}`);
+        }
+
+        const savedUser = await response.json();
+        const apiId = savedUser.id;
+
+        if (!Number.isSafeInteger(apiId)) {
+            throw new Error('The API did not return a valid client ID.');
+        }
+
+        const id = clients.some(client => client.id === apiId)
+            ? `local-${crypto.randomUUID()}`
+            : apiId;
+
+        const client = {
+            id,
+            apiId,
+            name,
+            email,
+            phone,
+            company,
+            status,
+            dealValue,
+            image: savedUser.image ?? '',
+            notes: [],
+            createdAt: new Date().toISOString(),
+        };
+
+        saveClients([client, ...clients]);
+        renderClients();
+        dialog.close();
+        showClientToast('Client added ✓');
+    } catch {
+        formError.textContent = 'Could not add the client. Please try again.';
+    } finally {
+        saveButton.disabled = false;
+        closeButton.disabled = false;
     }
 }
 
@@ -108,5 +274,13 @@ if (!getSignedInUser()) {
     });
 
     retryButton.addEventListener('click', loadClients);
+    addButton.addEventListener('click', openClientDialog);
+    closeButton.addEventListener('click', () => dialog.close());
+    form.addEventListener('submit', addClient);
+
+    dialog.addEventListener('cancel', event => {
+        if (saveButton.disabled) event.preventDefault();
+    });
+
     void loadClients();
 }
