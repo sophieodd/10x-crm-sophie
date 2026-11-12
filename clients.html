@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients | 10X CRM</title>
+    <link rel="stylesheet" href="./css/crm.css">
+    <script type="module" src="./js/clients-page.js"></script>
+</head>
+<body>
+    <div id="clients-page" hidden>
+        <header class="app-header">
+            <a class="brand" href="dashboard.html">CTRL<span>+ME</span> CRM</a>
+            <nav aria-label="Main navigation">
+                <a href="./dashboard.html">Dashboard</a>
+                <a href="./dashboard.html" aria-current="page">Clients</a>
+            </nav>
+            <button class="quiet" id="logout" type="button">Log out</button>
+        </header>
+
+        <main class="app-main">
+            <h1>Clients</h1>
+            <p id="clients-status" role="status"></p>
+            <button id="retry-clients" class="quiet" type="button" hidden>Retry</button>
+            <ul id="client-list" class="client-list" role="list"></ul>
+        </main>
+    </div>
+
+    <noscript>This application requires JavaScript.</noscript>
+</body>
+</html>

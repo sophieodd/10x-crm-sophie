@@ -1,20 +1,4 @@
-const SESSION_KEY = 'crm_session';
-const USERS_KEY = 'crm_users';
-
-function getSignedInUser() {
-    try {
-        const session = JSON.parse(localStorage.getItem(SESSION_KEY) ?? 'null');
-        const users = JSON.parse(localStorage.getItem(USERS_KEY) ?? '[]');
-
-        if (!session || !Array.isArray(users)) return null;
-
-        return users.find(
-            user => user?.id === session.userId && user?.email === session.email
-        ) ?? null;
-    } catch {
-        return null;
-    }
-}
+import { getSignedInUser, SESSION_KEY } from './session.js';
 
 const user = getSignedInUser();
 
