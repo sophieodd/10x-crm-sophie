@@ -3,74 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/crm.css">
     <title>Sign Up | 10X CRM</title>
 </head>
-<body>
-    <main>
-        <p>10X CRM</p>
-        <h1>Create your account</h1>
+<body class="crm-access">
+    <main class="access-shell">
+        <div class="access-brand">
+            <p class="access-product">10X CRM</p>
+            <p class="access-wordmark">CTRL<span>+ME</span></p>
+        </div>
 
-        <form method="post" novalidate>
-            <div>
-                <label for="fullName">Full Name</label>
-                <input
-                    type="text"
-                    id="fullName"
-                    name="fullName"
-                    autocomplete="name"
-                    required
-                >
-            </div>
+        <section class="access-content" aria-labelledby="access-title">
+            <h1 id="access-title">Create your account.</h1>
 
-            <div>
-                <label for="email">Email</label>
-                <input
-                    type="text"
-                    id="email"
-                    name="email"
-                    inputmode="email"
-                    autocomplete="email"
-                    required
-                >
-            </div>
+            <form class="access-form" method="post" novalidate>
+                <div class="access-field">
+                    <label for="fullName">Full name</label>
+                    <input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
 
-            <div>
-                <label for="company">Company</label>
-                <input
-                    type="text"
-                    id="company"
-                    name="company"
-                    autocomplete="organization"
-                    placeholder="Company (optional)"
-                >
-            </div>
+                <div class="access-field">
+                    <label for="email">Email</label>
+                    <input
+                        type="text"
+                        id="email"
+                        name="email"
+                        inputmode="email"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
 
-            <div>
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    autocomplete="new-password"
-                    required
-                >
-            </div>
+                <div class="access-field">
+                    <label for="company">
+                        Company <span class="access-optional">(optional)</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="company"
+                        name="company"
+                        autocomplete="organization"
+                    >
+                </div>
 
-            <div>
-                <label for="confirmPassword">Confirm Password</label>
-                <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    autocomplete="new-password"
-                    required
-                >
-            </div>
+                <div class="access-field">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
 
-            <button type="submit" disabled>Create Account</button>
-        </form>
+                <div class="access-field">
+                    <label for="confirmPassword">Confirm password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
 
-        <p>Already have an account? <a href="index.html">Log in</a></p>
+                <button class="access-submit" type="submit" disabled>
+                    Create account <span aria-hidden="true">→</span>
+                </button>
+            </form>
+
+            <p class="access-switch">
+                Already have an account? <a href="index.html">Log in</a>
+            </p>
+        </section>
     </main>
 </body>
 </html>
