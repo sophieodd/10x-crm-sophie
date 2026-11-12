@@ -1,7 +1,6 @@
 import { getSignedInUser, signOut } from './session.js';
+import { CLIENTS_KEY, USERS_ENDPOINT, getClients } from './client-store.js';
 
-const CLIENTS_KEY = 'crm_clients';
-const USERS_ENDPOINT = 'https://dummyjson.com/users';
 const CLIENT_STATUSES = ['Lead', 'Contacted', 'Won', 'Lost'];
 
 const page = document.querySelector('#clients-page');
@@ -82,40 +81,7 @@ async function loadClients() {
     statusMessage.textContent = 'Loading clients...';
 
     try {
-        const savedClients = localStorage.getItem(CLIENTS_KEY);
-
-        if (savedClients !== null) {
-            const storedClients = JSON.parse(savedClients);
-
-            if (!Array.isArray(storedClients)) {
-                throw new Error('Saved clients have an invalid format.');
-            }
-
-            clients = storedClients;
-        } else {
-            const response = await fetch(`${USERS_ENDPOINT}?limit=30`);
-
-            if (!response.ok) {
-                throw new Error(`Client request failed: ${response.status}`);
-            }
-
-            const { users } = await response.json();
-
-            saveClients(users.map(user => ({
-                id: user.id,
-                apiId: user.id,
-                name: `${user.firstName} ${user.lastName}`,
-                email: user.email,
-                phone: user.phone ?? '',
-                company: user.company?.name ?? '',
-                image: user.image ?? '',
-                status: 'Lead',
-                dealValue: 1000,
-                notes: [],
-                createdAt: new Date().toISOString(),
-            })));
-        }
-
+        clients = await getClients();
         renderClients();
         addButton.disabled = false;
     } catch {
