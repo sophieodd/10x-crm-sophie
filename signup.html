@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | 10X CRM</title>
+</head>
+<body>
+    <main>
+        <p>10X CRM</p>
+        <h1>Create your account</h1>
+
+        <form method="post" novalidate>
+            <div>
+                <label for="fullName">Full Name</label>
+                <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    autocomplete="name"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="email">Email</label>
+                <input
+                    type="text"
+                    id="email"
+                    name="email"
+                    inputmode="email"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="company">Company</label>
+                <input
+                    type="text"
+                    id="company"
+                    name="company"
+                    autocomplete="organization"
+                    placeholder="Company (optional)"
+                >
+            </div>
+
+            <div>
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="confirmPassword">Confirm Password</label>
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" disabled>Create Account</button>
+        </form>
+
+        <p>Already have an account? <a href="index.html">Log in</a></p>
+    </main>
+</body>
+</html>
