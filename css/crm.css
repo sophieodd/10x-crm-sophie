@@ -521,3 +521,18 @@ body.crm-access {
         font-size: clamp(2.125rem, 11vw, 2.75rem);
     }
 }
+
+.auth-success {
+    margin: 1rem 0 0;
+    color: #17643a;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+:root[data-theme="dark"] .auth-success {
+    color: #8cdaa8;
+}
+
+.auth-success:empty {
+    display: none;
+}
