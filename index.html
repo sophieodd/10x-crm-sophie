@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In | 10X CRM</title>
+</head>
+<body>
+    <main>
+        <p>10X CRM</p>
+        <h1>Welcome back</h1>
+
+        <form method="post" novalidate>
+            <div>
+                <label for="email">Email</label>
+                <input
+                    type="text"
+                    id="email"
+                    name="email"
+                    inputmode="email"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" disabled>Log In</button>
+        </form>
+
+        <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+    </main>
+</body>
+</html>
