@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | 10X CRM</title>
+    <link rel="stylesheet" href="./css/crm.css">
+    <script type="module" src="./js/dashboard.js"></script>
+</head>
+<body>
+    <div id="dashboard" hidden>
+        <header class="app-header">
+            <a class="brand" href="dashboard.html">CTRL<span>+ME</span> CRM</a>
+            <nav aria-label="Main navigation">
+                <a href="dashboard.html" aria-current="page">Dashboard</a>
+            </nav>
+            <button class="quiet" id="logout" type="button">Log out</button>
+        </header>
+
+        <main class="app-main">
+            <p class="eyebrow">Dashboard</p>
+            <h1 id="welcome-heading">Welcome back.</h1>
+            <p id="dashboard-error" class="form-error" role="alert"></p>
+        </main>
+    </div>
+
+    <noscript>This application requires JavaScript.</noscript>
+</body>
+</html>
