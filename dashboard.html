@@ -12,10 +12,12 @@
     <div id="dashboard" hidden>
         <header class="app-header">
             <a class="brand" href="dashboard.html">CTRL<span>+ME</span> CRM</a>
+
             <nav aria-label="Main navigation">
                 <a href="dashboard.html" aria-current="page">Dashboard</a>
                 <a href="clients.html">Clients</a>
             </nav>
+
             <button
                 type="button"
                 id="theme-toggle"
@@ -29,6 +31,7 @@
                     <span class="theme-toggle__icon">☾</span>
                 </span>
             </button>
+
             <button class="quiet" id="logout" type="button">Log out</button>
         </header>
 
@@ -43,23 +46,44 @@
 
             <p id="dashboard-error" class="form-error" role="alert"></p>
             <p id="dashboard-status" role="status"></p>
+
             <button id="dashboard-retry" class="quiet" type="button" hidden>
                 Retry
             </button>
 
             <div id="dashboard-data" hidden>
                 <dl class="dashboard-stats" aria-label="Client statistics">
-                    <div class="card"><dt>Total Clients</dt><dd id="total-clients"></dd></div>
-                    <div class="card"><dt>Active Deals</dt><dd id="active-deals"></dd></div>
-                    <div class="card"><dt>Won Revenue</dt><dd id="won-revenue"></dd></div>
-                    <div class="card"><dt>New This Week</dt><dd id="new-this-week"></dd></div>
+                    <div class="card stat-card stat-card--total">
+                        <dt>Total Clients</dt>
+                        <dd id="total-clients"></dd>
+                    </div>
+                    <div class="card stat-card stat-card--active">
+                        <dt>Active Deals</dt>
+                        <dd id="active-deals"></dd>
+                    </div>
+                    <div class="card stat-card stat-card--won">
+                        <dt>Won Revenue</dt>
+                        <dd id="won-revenue"></dd>
+                    </div>
+                    <div class="card stat-card stat-card--new">
+                        <dt>New This Week</dt>
+                        <dd id="new-this-week"></dd>
+                    </div>
                 </dl>
 
-                <div class="dashboard-panels">
-                    <section class="card" aria-labelledby="pipeline-title">
-                        <h2 id="pipeline-title">Pipeline Overview</h2>
-                        <dl id="pipeline" class="dashboard-pipeline"></dl>
-                    </section>
+                <div class="dashboard-overview">
+                    <div class="dashboard-overview__left">
+                        <aside class="boss-note" aria-labelledby="boss-note-title">
+                            <h2 id="boss-note-title">NOTE TO SELF</h2>
+                            <p>Stop saying “I have an idea”.<br>That’s how we got here.</p>
+                            <p class="boss-note__signature">Sincerely, YOU</p>
+                        </aside>
+
+                        <section class="card" aria-labelledby="pipeline-title">
+                            <h2 id="pipeline-title">Pipeline Overview</h2>
+                            <dl id="pipeline" class="dashboard-pipeline"></dl>
+                        </section>
+                    </div>
 
                     <section class="card" aria-labelledby="recent-title">
                         <h2 id="recent-title">Recent Clients</h2>
@@ -69,11 +93,16 @@
                 </div>
             </div>
         </main>
-                <footer class="crm-footer">
+
+        <footer class="crm-footer">
             <div class="crm-footer__inner">
                 <div class="crm-footer__top">
                     <div>
-                        <a class="crm-footer__brand" href="./dashboard.html" aria-label="CTRL+ME CRM dashboard">
+                        <a
+                            class="crm-footer__brand"
+                            href="./dashboard.html"
+                            aria-label="CTRL+ME CRM dashboard"
+                        >
                             CTRL<sup>+ME</sup>
                         </a>
                         <p>Chaos, now with infrastructure.</p>
@@ -92,6 +121,7 @@
             </div>
         </footer>
     </div>
+
     <noscript>This application requires JavaScript.</noscript>
 </body>
 </html>
