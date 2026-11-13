@@ -379,7 +379,7 @@ body.crm-access {
 .quiet {
     min-height: 2.75rem;
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--field-border);
+    border: none;
     background: var(--surface);
     color: var(--text);
     font-size: 0.875rem;
@@ -788,4 +788,59 @@ body.crm-access {
     .theme-toggle__thumb {
         transition: none;
     }
+}
+
+.crm-footer {
+    background: var(--blue);
+    color: #fff;
+}
+
+.crm-footer__inner {
+    width: min(100%, 80rem);
+    margin-inline: auto;
+    padding: 2.5rem clamp(1.25rem, 4vw, 3rem) 1.25rem;
+}
+
+.crm-footer__top,
+.crm-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.crm-footer__brand {
+    color: inherit;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.08em;
+    text-decoration: none;
+}
+
+.crm-footer__brand sup {
+    font-size: 0.55em;
+}
+
+.crm-footer__top p {
+    margin: 0.75rem 0 0;
+}
+
+.crm-footer__contact h2 {
+    margin: 0 0 0.625rem;
+    font: 700 0.75rem/1.4 var(--font-mono, monospace);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.crm-footer__contact p {
+    margin-top: 0;
+}
+
+.crm-footer__bottom {
+    gap: 0.5rem 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgb(255 255 255 / 45%);
+    font: 0.75rem/1.5 var(--font-mono, monospace);
+    letter-spacing: 0.06em;
 }
