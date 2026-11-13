@@ -13,17 +13,49 @@
             <a class="brand" href="dashboard.html">CTRL<span>+ME</span> CRM</a>
             <nav aria-label="Main navigation">
                 <a href="dashboard.html" aria-current="page">Dashboard</a>
+                <a href="clients.html">Clients</a>
             </nav>
             <button class="quiet" id="logout" type="button">Log out</button>
         </header>
 
         <main class="app-main">
-            <p class="eyebrow">Dashboard</p>
-            <h1 id="welcome-heading">Welcome back.</h1>
+            <div class="dashboard-heading">
+                <div>
+                    <p class="eyebrow">Dashboard</p>
+                    <h1 id="welcome-heading">Welcome back.</h1>
+                </div>
+                <time id="dashboard-clock" class="dashboard-clock"></time>
+            </div>
+
             <p id="dashboard-error" class="form-error" role="alert"></p>
+            <p id="dashboard-status" role="status"></p>
+            <button id="dashboard-retry" class="quiet" type="button" hidden>
+                Retry
+            </button>
+
+            <div id="dashboard-data" hidden>
+                <dl class="dashboard-stats" aria-label="Client statistics">
+                    <div class="card"><dt>Total Clients</dt><dd id="total-clients"></dd></div>
+                    <div class="card"><dt>Active Deals</dt><dd id="active-deals"></dd></div>
+                    <div class="card"><dt>Won Revenue</dt><dd id="won-revenue"></dd></div>
+                    <div class="card"><dt>New This Week</dt><dd id="new-this-week"></dd></div>
+                </dl>
+
+                <div class="dashboard-panels">
+                    <section class="card" aria-labelledby="pipeline-title">
+                        <h2 id="pipeline-title">Pipeline Overview</h2>
+                        <dl id="pipeline" class="dashboard-pipeline"></dl>
+                    </section>
+
+                    <section class="card" aria-labelledby="recent-title">
+                        <h2 id="recent-title">Recent Clients</h2>
+                        <ul id="recent-clients" class="dashboard-recent" role="list"></ul>
+                        <a href="clients.html">View all clients →</a>
+                    </section>
+                </div>
+            </div>
         </main>
     </div>
-
     <noscript>This application requires JavaScript.</noscript>
 </body>
 </html>

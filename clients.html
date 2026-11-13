@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients | 10X CRM</title>
+    <link rel="stylesheet" href="./css/crm.css">
+    <script type="module" src="./js/clients-page.js"></script>
+</head>
+<body>
+    <div id="clients-page" hidden>
+        <header class="app-header">
+            <a class="brand" href="dashboard.html">CTRL<span>+ME</span> CRM</a>
+            <nav aria-label="Main navigation">
+                <a href="./dashboard.html">Dashboard</a>
+                <a href="./dashboard.html" aria-current="page">Clients</a>
+            </nav>
+            <button class="quiet" id="logout" type="button">Log out</button>
+        </header>
+
+        <main class="app-main">
+            <div class="clients-heading">
+                <h1>Clients</h1>
+                <button class="primary" id="open-client-dialog" type="button" disabled>
+                    + Add Client
+                </button>
+            </div>
+            <p id="clients-status" role="status"></p>
+            <button id="retry-clients" class="quiet" type="button" hidden>Retry</button>
+            <ul id="client-list" class="client-list" role="list"></ul>
+        </main>
+        <dialog id="client-dialog" aria-labelledby="client-dialog-title">
+            <div class="clients-heading">
+                <h2 id="client-dialog-title">Add Client</h2>
+                <button class="quiet" id="close-client-dialog" type="button" aria-label="Close">
+                    ×
+                </button>
+            </div>
+
+            <form id="client-form" novalidate>
+                <div class="field">
+                    <label for="client-name">Name</label>
+                    <input id="client-name" name="name" type="text" required aria-describedby="client-name-error">
+                    <p class="field-error" id="client-name-error" data-error="name"></p>
+                </div>
+
+                <div class="field">
+                    <label for="client-email">Email</label>
+                    <input id="client-email" name="email" type="email" required aria-describedby="client-email-error">
+                    <p class="field-error" id="client-email-error" data-error="email"></p>
+                </div>
+
+                <div class="field">
+                    <label for="client-phone">Phone (optional)</label>
+                    <input id="client-phone" name="phone" type="tel" aria-describedby="client-phone-error">
+                    <p class="field-error" id="client-phone-error" data-error="phone"></p>
+                </div>
+
+                <div class="field">
+                    <label for="client-company">Company (optional)</label>
+                    <input id="client-company" name="company" type="text">
+                </div>
+
+                <div class="field">
+                    <label for="client-value">Deal Value ($)</label>
+                    <input id="client-value" name="dealValue" type="number" min="0.01" step="0.01" required aria-describedby="client-value-error">
+                    <p class="field-error" id="client-value-error" data-error="dealValue"></p>
+                </div>
+
+                <div class="field">
+                    <label for="client-status-select">Status</label>
+                    <select id="client-status-select" name="status">
+                        <option>Lead</option>
+                        <option>Contacted</option>
+                        <option>Won</option>
+                        <option>Lost</option>
+                    </select>
+                </div>
+
+                <p id="client-form-error" class="form-error" role="alert"></p>
+                <button class="primary" type="submit">Add Client</button>
+            </form>
+        </dialog>
+
+        <div id="toasts" aria-live="polite">
+            <p class="toast" id="client-toast" hidden></p>
+        </div>
+    </div>
+
+    <noscript>This application requires JavaScript.</noscript>
+</body>
+</html>
