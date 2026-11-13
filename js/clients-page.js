@@ -2,6 +2,8 @@ import { getSignedInUser, signOut } from './session.js';
 import { CLIENTS_KEY, USERS_ENDPOINT, getClients } from './client-store.js';
 
 const CLIENT_STATUSES = ['Lead', 'Contacted', 'Won', 'Lost'];
+const LOGO_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
+const MAX_LOGO_BYTES = 256 * 1024;
 
 const page = document.querySelector('#clients-page');
 const list = document.querySelector('#client-list');
@@ -9,13 +11,18 @@ const statusMessage = document.querySelector('#clients-status');
 const retryButton = document.querySelector('#retry-clients');
 const addButton = document.querySelector('#open-client-dialog');
 const dialog = document.querySelector('#client-dialog');
+const dialogTitle = dialog.querySelector('h1, h2, h3, h4, h5, h6');
 const closeButton = document.querySelector('#close-client-dialog');
 const form = document.querySelector('#client-form');
 const saveButton = form.querySelector('button[type="submit"]');
 const formError = document.querySelector('#client-form-error');
 const toast = document.querySelector('#client-toast');
 
+const addDialogTitle = dialogTitle?.textContent ?? 'Add Client';
+const addButtonText = saveButton.textContent;
+
 let clients = [];
+let editingClientId = null;
 let toastTimer;
 
 const dollars = new Intl.NumberFormat('en-US', {
@@ -30,6 +37,38 @@ function textElement(tag, text, className = '') {
     element.textContent = text;
     element.className = className;
     return element;
+}
+
+const logoField = document.createElement('div');
+const logoLabel = textElement('label', 'Company logo (optional)');
+logoLabel.htmlFor = 'client-company-logo';
+
+const logoInput = document.createElement('input');
+logoInput.type = 'file';
+logoInput.id = 'client-company-logo';
+logoInput.accept = LOGO_TYPES.join(',');
+logoInput.setAttribute('aria-describedby', 'client-logo-hint client-logo-error');
+
+const logoHint = textElement('small', '', 'muted');
+logoHint.id = 'client-logo-hint';
+
+const logoError = textElement('p', '', 'form-error');
+logoError.id = 'client-logo-error';
+logoError.setAttribute('role', 'alert');
+
+logoField.append(logoLabel, logoInput, logoHint, logoError);
+
+const companyField = form.elements.namedItem('company').closest('div');
+
+if (companyField && form.contains(companyField)) {
+    companyField.after(logoField);
+} else {
+    form.prepend(logoField);
+}
+
+function saveClients(nextClients) {
+    localStorage.setItem(CLIENTS_KEY, JSON.stringify(nextClients));
+    clients = nextClients;
 }
 
 function renderClients() {
@@ -57,13 +96,63 @@ function renderClients() {
             details.style.gridColumn = '1 / -1';
         }
 
+        const company = textElement(
+            'p',
+            client.company || 'Independent',
+            'client-company muted'
+        );
+
+        if (client.companyLogo) {
+            const logo = document.createElement('img');
+            logo.className = 'client-company__logo';
+            logo.src = client.companyLogo;
+            logo.alt = '';
+            logo.width = 28;
+            logo.height = 28;
+            logo.loading = 'lazy';
+            company.prepend(logo);
+        }
+
+        const statusSelect = document.createElement('select');
+        statusSelect.className = 'client-badge client-status-select';
+        statusSelect.setAttribute('aria-label', `Change status for ${client.name}`);
+
+        for (const status of CLIENT_STATUSES) {
+            statusSelect.add(new Option(status, status));
+        }
+
+        statusSelect.value = client.status;
+        statusSelect.dataset.status = client.status;
+
+        statusSelect.addEventListener('change', () => {
+            const nextStatus = statusSelect.value;
+
+            try {
+                saveClients(clients.map(item =>
+                    item.id === client.id ? { ...item, status: nextStatus } : item
+                ));
+
+                statusSelect.dataset.status = nextStatus;
+                statusMessage.textContent = '';
+            } catch {
+                statusSelect.value = statusSelect.dataset.status;
+                statusMessage.textContent =
+                    'Could not update the client status. Please try again.';
+            }
+        });
+
         details.append(
             textElement('h2', client.name),
-            textElement('p', client.company || 'Independent', 'muted'),
+            company,
             textElement('p', client.email, 'muted'),
-            textElement('span', client.status, 'client-badge'),
+            statusSelect,
             textElement('p', dollars.format(client.dealValue), 'client-value')
         );
+
+        const editButton = textElement('button', 'Edit', 'quiet');
+        editButton.type = 'button';
+        editButton.setAttribute('aria-label', `Edit ${client.name}`);
+        editButton.addEventListener('click', () => openClientDialog(client.id));
 
         const deleteButton = textElement('button', 'Delete', 'client-delete');
         deleteButton.type = 'button';
@@ -73,16 +162,11 @@ function renderClients() {
 
         const actions = document.createElement('div');
         actions.className = 'client-card__actions';
-        actions.append(deleteButton);
+        actions.append(editButton, deleteButton);
 
         card.append(details, actions);
         list.append(card);
     }
-}
-
-function saveClients(nextClients) {
-    localStorage.setItem(CLIENTS_KEY, JSON.stringify(nextClients));
-    clients = nextClients;
 }
 
 async function loadClients() {
@@ -118,11 +202,41 @@ function showClientErrors(errors) {
     }
 }
 
-function openClientDialog() {
+function openClientDialog(clientId = null) {
+    const client = clients.find(item => item.id === clientId);
+    editingClientId = client?.id ?? null;
+
     form.reset();
     showClientErrors({});
     formError.textContent = '';
+    logoError.textContent = '';
+    logoInput.removeAttribute('aria-invalid');
+
+    if (dialogTitle) {
+        dialogTitle.textContent = client ? 'Edit Client' : addDialogTitle;
+    }
+
+    saveButton.textContent = client ? 'Save Changes' : addButtonText;
+    logoHint.textContent = client?.companyLogo
+        ? 'Choose a new image to replace the current logo. PNG, JPG or WebP, up to 256 KB.'
+        : 'PNG, JPG or WebP, up to 256 KB.';
+
+    if (client) {
+        for (const field of ['name', 'email', 'phone', 'company', 'dealValue', 'status']) {
+            form.elements.namedItem(field).value = client[field] ?? '';
+        }
+    }
+
     dialog.showModal();
+}
+
+function readLogo(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => resolve(reader.result));
+        reader.addEventListener('error', () => reject(reader.error));
+        reader.readAsDataURL(file);
+    });
 }
 
 function showClientToast(message) {
@@ -163,12 +277,16 @@ async function deleteClient(client, button) {
     }
 }
 
-async function addClient(event) {
+async function saveClientForm(event) {
     event.preventDefault();
     if (saveButton.disabled) return;
 
     formError.textContent = '';
+    logoError.textContent = '';
+    logoInput.removeAttribute('aria-invalid');
 
+    const clientId = editingClientId;
+    const isEditing = clientId !== null;
     const fields = new FormData(form);
     const name = String(fields.get('name') ?? '').trim();
     const email = String(fields.get('email') ?? '').trim().toLowerCase();
@@ -176,6 +294,7 @@ async function addClient(event) {
     const company = String(fields.get('company') ?? '').trim();
     const dealValue = Number(fields.get('dealValue'));
     const status = String(fields.get('status') ?? 'Lead');
+    const logoFile = logoInput.files[0];
     const errors = {};
 
     if (name.length < 3) {
@@ -184,7 +303,9 @@ async function addClient(event) {
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         errors.email = 'Please enter a valid email address';
-    } else if (clients.some(client => client.email.toLowerCase() === email)) {
+    } else if (clients.some(client =>
+        client.id !== clientId && client.email.toLowerCase() === email
+    )) {
         errors.email = 'A client with this email already exists';
     }
 
@@ -196,8 +317,20 @@ async function addClient(event) {
         errors.dealValue = 'Deal value must be a positive number';
     }
 
+    if (logoFile && (
+        !LOGO_TYPES.includes(logoFile.type) || logoFile.size > MAX_LOGO_BYTES
+    )) {
+        logoError.textContent = 'Choose a PNG, JPG or WebP image up to 256 KB.';
+        logoInput.setAttribute('aria-invalid', 'true');
+    }
+
     showClientErrors(errors);
     if (Object.keys(errors).length) return;
+
+    if (logoError.textContent) {
+        logoInput.focus();
+        return;
+    }
 
     if (!CLIENT_STATUSES.includes(status)) {
         formError.textContent = 'Select a valid status.';
@@ -209,54 +342,69 @@ async function addClient(event) {
     closeButton.disabled = true;
 
     try {
-        const [firstName, ...remainingNames] = name.split(/\s+/);
-        const response = await fetch(`${USERS_ENDPOINT}/add`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                firstName,
-                lastName: remainingNames.join(' '),
-                email,
-                phone,
-                company: { name: company },
-            }),
-        });
+        const values = { name, email, phone, company, status, dealValue };
 
-        if (!response.ok) {
-            throw new Error(`Client request failed: ${response.status}`);
+        if (logoFile) {
+            values.companyLogo = await readLogo(logoFile);
         }
 
-        const savedUser = await response.json();
-        const apiId = savedUser.id;
+        if (isEditing) {
+            if (!clients.some(client => client.id === clientId)) {
+                formError.textContent = 'This client is no longer in the list.';
+                return;
+            }
 
-        if (!Number.isSafeInteger(apiId)) {
-            throw new Error('The API did not return a valid client ID.');
+            saveClients(clients.map(client =>
+                client.id === clientId ? { ...client, ...values } : client
+            ));
+        } else {
+            const [firstName, ...remainingNames] = name.split(/\s+/);
+            const response = await fetch(`${USERS_ENDPOINT}/add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    firstName,
+                    lastName: remainingNames.join(' '),
+                    email,
+                    phone,
+                    company: { name: company },
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Client request failed: ${response.status}`);
+            }
+
+            const savedUser = await response.json();
+            const apiId = savedUser.id;
+
+            if (!Number.isSafeInteger(apiId)) {
+                throw new Error('The API did not return a valid client ID.');
+            }
+
+            const id = clients.some(client => client.id === apiId)
+                ? `local-${crypto.randomUUID()}`
+                : apiId;
+
+            const client = {
+                ...values,
+                id,
+                apiId,
+                image: savedUser.image ?? '',
+                notes: [],
+                createdAt: new Date().toISOString(),
+            };
+
+            saveClients([client, ...clients]);
         }
 
-        const id = clients.some(client => client.id === apiId)
-            ? `local-${crypto.randomUUID()}`
-            : apiId;
-
-        const client = {
-            id,
-            apiId,
-            name,
-            email,
-            phone,
-            company,
-            status,
-            dealValue,
-            image: savedUser.image ?? '',
-            notes: [],
-            createdAt: new Date().toISOString(),
-        };
-
-        saveClients([client, ...clients]);
-        renderClients();
         dialog.close();
-        showClientToast('Client added ✓');
+        renderClients();
+        showClientToast(isEditing ? 'Client updated ✓' : 'Client added ✓');
     } catch {
-        formError.textContent = 'Could not add the client. Please try again.';
+        formError.textContent = isEditing
+            ? 'Could not save the changes. Please try again.'
+            : 'Could not add the client. Please try again.';
     } finally {
         saveButton.disabled = false;
         closeButton.disabled = false;
@@ -277,9 +425,9 @@ if (!getSignedInUser()) {
     });
 
     retryButton.addEventListener('click', loadClients);
-    addButton.addEventListener('click', openClientDialog);
+    addButton.addEventListener('click', () => openClientDialog());
     closeButton.addEventListener('click', () => dialog.close());
-    form.addEventListener('submit', addClient);
+    form.addEventListener('submit', saveClientForm);
 
     dialog.addEventListener('cancel', event => {
         if (saveButton.disabled) event.preventDefault();

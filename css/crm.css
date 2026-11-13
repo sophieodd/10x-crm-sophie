@@ -973,3 +973,65 @@ body.crm-access {
     opacity: 0.55;
     cursor: wait;
 }
+
+.client-card .client-badge[data-status="Lead"] {
+    --badge-color: var(--blue);
+}
+
+.client-card .client-badge[data-status="Contacted"] {
+    --badge-color: var(--lavender);
+}
+
+.client-card .client-badge[data-status="Won"] {
+    --badge-color: #48c9a0;
+}
+
+.client-card .client-badge[data-status="Lost"] {
+    --badge-color: var(--magenta);
+}
+
+.client-card .client-badge[data-status] {
+    background: var(--badge-color);
+    color: #111116;
+}
+
+.client-card .client-status-select {
+    display: inline-block;
+    width: auto;
+    min-height: 2rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--badge-color, var(--highlight));
+    color: #111116;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.client-card .client-status-select:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.client-card__actions {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.client-company {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow-wrap: anywhere;
+}
+
+.client-card .client-company__logo {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    border-radius: 0;
+    background: var(--surface);
+    object-fit: contain;
+}
