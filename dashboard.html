@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | 10X CRM</title>
+    <script src="./js/theme.js"></script>
     <link rel="stylesheet" href="./css/crm.css">
     <script type="module" src="./js/dashboard.js"></script>
 </head>
@@ -15,6 +16,19 @@
                 <a href="dashboard.html" aria-current="page">Dashboard</a>
                 <a href="clients.html">Clients</a>
             </nav>
+            <button
+                type="button"
+                id="theme-toggle"
+                class="theme-toggle"
+                aria-label="Dark mode"
+                aria-pressed="false"
+            >
+                <span class="theme-toggle__track" aria-hidden="true">
+                    <span class="theme-toggle__thumb"></span>
+                    <span class="theme-toggle__icon">☀</span>
+                    <span class="theme-toggle__icon">☾</span>
+                </span>
+            </button>
             <button class="quiet" id="logout" type="button">Log out</button>
         </header>
 
