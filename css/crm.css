@@ -713,3 +713,79 @@ body.crm-access {
         grid-template-columns: minmax(0, 1fr);
     }
 }
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #111116;
+    --surface: #1c1c25;
+    --text: #f8f7fb;
+    --muted: #b7b3c4;
+    --border: #373342;
+    --field-border: #777084;
+    --highlight: #2d2343;
+    --accent-text: #ff8bda;
+    --link: #9dcaff;
+    --focus: #9dcaff;
+}
+
+.theme-toggle {
+    display: inline-grid;
+    min-width: 4.25rem;
+    min-height: 2.75rem;
+    padding: 0;
+    place-items: center;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.theme-toggle__track {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    width: 4.25rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: var(--highlight);
+    color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.theme-toggle__thumb {
+    position: absolute;
+    top: 0.25rem;
+    left: 0.3125rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--lavender);
+    transition: transform 180ms ease;
+}
+
+.theme-toggle__icon {
+    position: relative;
+    text-align: center;
+    font: 700 1rem/1 system-ui, sans-serif;
+}
+
+.theme-toggle[aria-pressed="true"] .theme-toggle__thumb {
+    transform: translateX(2.125rem);
+}
+
+.theme-toggle[aria-pressed="false"] .theme-toggle__icon:first-of-type,
+.theme-toggle[aria-pressed="true"] .theme-toggle__icon:last-child {
+    color: #111116;
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .theme-toggle__thumb {
+        transition: none;
+    }
+}
