@@ -57,22 +57,25 @@ function renderClients() {
             details.style.gridColumn = '1 / -1';
         }
 
-        const deleteButton = textElement('button', 'Delete', 'quiet');
-        deleteButton.type = 'button';
-        deleteButton.dataset.id = String(client.id);
-        deleteButton.setAttribute('aria-label', `Delete ${client.name}`);
-        deleteButton.addEventListener('click', () => deleteClient(client, deleteButton));
-
         details.append(
             textElement('h2', client.name),
             textElement('p', client.company || 'Independent', 'muted'),
             textElement('p', client.email, 'muted'),
             textElement('span', client.status, 'client-badge'),
-            textElement('p', dollars.format(client.dealValue), 'client-value'),
-            deleteButton
+            textElement('p', dollars.format(client.dealValue), 'client-value')
         );
 
-        card.append(details);
+        const deleteButton = textElement('button', 'Delete', 'client-delete');
+        deleteButton.type = 'button';
+        deleteButton.dataset.id = String(client.id);
+        deleteButton.setAttribute('aria-label', `Delete ${client.name}`);
+        deleteButton.addEventListener('click', () => deleteClient(client, deleteButton));
+
+        const actions = document.createElement('div');
+        actions.className = 'client-card__actions';
+        actions.append(deleteButton);
+
+        card.append(details, actions);
         list.append(card);
     }
 }

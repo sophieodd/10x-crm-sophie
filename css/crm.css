@@ -938,3 +938,38 @@ body.crm-access {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
     }
 }
+
+.client-card__actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.25rem;
+    padding-top: 0.625rem;
+    border-top: 1px solid var(--border);
+}
+
+.client-card .client-delete {
+    min-height: 2.75rem;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: var(--accent-text);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.client-card .client-delete:hover:not(:disabled) {
+    background: var(--highlight);
+}
+
+.client-card .client-delete:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+}
+
+.client-card .client-delete:disabled {
+    opacity: 0.55;
+    cursor: wait;
+}
