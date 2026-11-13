@@ -28,7 +28,7 @@ HTML, CSS, vanilla JavaScript, Fetch API, DummyJSON and localStorage.
 
 ## Live Demo
 
-Deployment pending.
+[Open the live 10X CRM](https://10x-crm-sophie.vercel.app/)
 
 ## Test Account
 
