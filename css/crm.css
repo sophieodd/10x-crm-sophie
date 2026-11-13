@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap");
 
 :root {
     color-scheme: light;
@@ -843,4 +844,97 @@ body.crm-access {
     border-top: 1px solid rgb(255 255 255 / 45%);
     font: 0.75rem/1.5 var(--font-mono, monospace);
     letter-spacing: 0.06em;
+}
+.dashboard-stats > .stat-card--total {
+    --stat-accent: var(--blue);
+}
+
+.dashboard-stats > .stat-card--active {
+    --stat-accent: var(--lavender);
+}
+
+.dashboard-stats > .stat-card--won {
+    --stat-accent: #48c9a0;
+}
+
+.dashboard-stats > .stat-card--new {
+    --stat-accent: var(--magenta);
+}
+
+.dashboard-stats > .stat-card {
+    border-top: 4px solid var(--stat-accent);
+    background-color: color-mix(in srgb, var(--stat-accent) 14%, var(--surface));
+}
+
+.dashboard-stats > .stat-card > dd {
+    color: var(--text);
+}
+
+.boss-note {
+    position: relative;
+    box-sizing: border-box;
+    width: min(100%, 25rem);
+    margin: 2rem 0 2.5rem;
+    padding: 1.25rem clamp(1rem, 4vw, 1.75rem) 1rem;
+    transform: rotate(-1.5deg);
+    background: #ffefa3;
+    color: #241b31;
+    box-shadow: 3px 6px 0 rgb(17 17 22 / 18%);
+    font-family: "Caveat", cursive;
+}
+
+.boss-note::before {
+    position: absolute;
+    top: -0.55rem;
+    left: 50%;
+    width: 5.25rem;
+    height: 1.1rem;
+    transform: translateX(-50%) rotate(4deg);
+    background:  var(--magenta);
+    content: "";
+}
+
+.boss-note h2 {
+    margin: 0 0 0.35rem;
+    color:  var(--magenta);
+    font: 700 1.65rem/1 "Caveat", cursive;
+}
+
+.boss-note p {
+    margin: 0;
+    font-size: clamp(1.4rem, 4vw, 1.85rem);
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+.boss-note .boss-note__signature {
+    margin-top: 0.65rem;
+    font-size: 1.2rem;
+    text-align: right;
+}
+
+.dashboard-overview {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.dashboard-overview__left {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3.5rem;
+}
+
+.dashboard-overview__left > .boss-note {
+    justify-self: start;
+    margin: 0 0.375rem;
+    width: min(calc(100% - 0.75rem), 25rem);
+}
+
+@media (min-width: 48rem) {
+    .dashboard-overview {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    }
 }

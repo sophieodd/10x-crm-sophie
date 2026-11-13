@@ -53,6 +53,9 @@ function renderDashboard(clients) {
 
     for (const status of statuses) {
         const row = document.createElement('div');
+        row.classList.add('pipeline-status');
+        row.dataset.status = status;
+
         const count = clients.filter(client => client.status === status).length;
         row.append(textElement('dt', status), textElement('dd', count));
         pipeline.append(row);
