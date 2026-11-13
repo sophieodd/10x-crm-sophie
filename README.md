@@ -2,7 +2,7 @@
 
 ## About
 
-10X CRM is my vanilla JavaScript exam project. It’s a small browser-based CRM for keeping track of clients, deal stages and sales activity. I gave it the same CTRL+ME branding as my shop project.
+10X CRM is my vanilla JavaScript exam project. 10X CRM is the back office for my CTRL+ME shop concept. It tracks client relationships, sales opportunities and deal stages.
 
 ## Features
 
