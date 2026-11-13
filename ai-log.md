@@ -1,33 +1,53 @@
 # AI Usage Log
 
-## 1. CRM project setup
+Tool used throughout: ChatGPT. The requests below are summarized.
 
-**Tool:** ChatGPT
+## 1. Setting up the CRM repository
 
-**Prompt summary:** Help me set up the 10X CRM exam project in a separate GitHub repository using HTML, CSS and vanilla JavaScript.
+**Goal:** Start the JavaScript exam project.
 
-**How I refined the request:** I started by asking how to begin the JavaScript project. Then I specified that the CRM needed its own repository and that it would use vanilla JavaScript.
+**Prompt summary:** I first asked how to start the project. I then narrowed the request to a separate GitHub repository using HTML, CSS and vanilla JavaScript.
 
-**What I used and why:** I used the Git setup instructions to create and connect the CRM repository. This gave the CRM its own commit history.
+**What I used:** I followed the Git setup steps and kept the CRM separate from my React shop.
 
-**What I learned:** I can check the repository root and remote before pushing to make sure I’m working in the right project.
+**What I learned:** Checking the repo root and remote before pushing helps me catch mistakes early.
 
-## 2. Login and signup design
+## 2. Designing the login and signup pages
 
-**Tool:** ChatGPT
+**Goal:** Make both forms fit the CTRL+ME brand.
 
-**Prompt summary:** Redesign the login and signup forms to match the CTRL ME brand. Use the same stylesheet for both pages and adapt the layout for mobile.
+**Prompt summary:** Redesign the two forms with a shared stylesheet and a layout that works on mobile.
 
-**What I changed and why:** The first version used a centered form card that felt dated to me. I asked for a different layout and used the version with a dark brand panel beside the form. On mobile, the brand panel sits above the form.
+**What I changed:** The first centered card felt dated. I used a dark brand panel beside the form and stacked the two on smaller screens.
 
-**What I learned:** A shared stylesheet keeps both pages consistent. The same layout can change at a breakpoint without duplicating the HTML.
+**What I learned:** I can change the layout at a breakpoint and keep the same HTML.
 
-## 3. Signup and login validation
+## 3. Validating signup and login
 
-**Tool:** ChatGPT
+**Goal:** Show clear errors and save accounts only after validation passes.
 
-**Prompt summary:** Add vanilla JavaScript validation to signup and login. Follow the CRM PRD, show errors beside the relevant fields and save valid accounts and sessions in browser storage.
+**Prompt summary:** Review my signup and login forms against the exam requirements and help me implement validation.
 
-**What I corrected and why:** The first suggestion kept the submit button disabled until all fields were valid. The PRD says to validate on submit and show the errors together. I used the revised script, which enables submit when the form is ready and only saves an account after validation passes.
+**What I corrected:** An early suggestion kept the button disabled until every field was valid. I switched to checking the fields on submit so users can see what needs fixing.
 
-**What I learned:** Keeping validation separate from saving makes it easier to see why a submission was rejected and when the app writes to browser storage.
+**What I learned:** Separating validation from storage makes it easier to trace why a form was rejected.
+
+## 4. Debugging the blank Clients page
+
+**Goal:** Find out why the page opened with no content.
+
+**Prompt summary:** Help me diagnose a blank Clients page when the navigation link opens the right URL.
+
+**What I used:** I checked the script path from the terminal. The HTML pointed to a JavaScript file that was missing. The page worked after I added it.
+
+**What I learned:** A working page link and a working script are two separate things to check.
+
+## 5. Improving the client status control
+
+**Goal:** Make it easier to see and change a client’s deal stage.
+
+**Prompt summary:** Combine the colored badge and the status dropdown into one control.
+
+**What I changed:** I used a single colored select. Changing the stage updates its color and saves the new value with the client record.
+
+**What I learned:** A native select handles the interaction and a data attribute lets CSS handle the color.
