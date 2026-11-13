@@ -57,12 +57,19 @@ function renderClients() {
             details.style.gridColumn = '1 / -1';
         }
 
+        const deleteButton = textElement('button', 'Delete', 'quiet');
+        deleteButton.type = 'button';
+        deleteButton.dataset.id = String(client.id);
+        deleteButton.setAttribute('aria-label', `Delete ${client.name}`);
+        deleteButton.addEventListener('click', () => deleteClient(client, deleteButton));
+
         details.append(
             textElement('h2', client.name),
             textElement('p', client.company || 'Independent', 'muted'),
             textElement('p', client.email, 'muted'),
             textElement('span', client.status, 'client-badge'),
-            textElement('p', dollars.format(client.dealValue), 'client-value')
+            textElement('p', dollars.format(client.dealValue), 'client-value'),
+            deleteButton
         );
 
         card.append(details);
@@ -124,6 +131,33 @@ function showClientToast(message) {
         toast.hidden = true;
         toast.textContent = '';
     }, 3000);
+}
+
+async function deleteClient(client, button) {
+    if (!window.confirm('Delete this client? This cannot be undone.')) return;
+
+    button.disabled = true;
+
+    try {
+        const apiId = client.apiId ?? client.id;
+        const response = await fetch(
+            `${USERS_ENDPOINT}/${encodeURIComponent(apiId)}`,
+            { method: 'DELETE' }
+        );
+
+        // DummyJSON can return 404 for clients created through its mock API.
+        if (!response.ok && response.status !== 404) {
+            throw new Error(`Delete request failed: ${response.status}`);
+        }
+
+        saveClients(clients.filter(item => item.id !== client.id));
+        renderClients();
+        showClientToast('Client deleted');
+    } catch {
+        statusMessage.textContent = 'Could not delete the client. Please try again.';
+    } finally {
+        button.disabled = false;
+    }
 }
 
 async function addClient(event) {
